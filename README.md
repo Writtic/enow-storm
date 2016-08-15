@@ -1,13 +1,13 @@
 writtic/enow-storm
 =========================
 
-Test project for enow-storm based on information provided in:
+Test project for enow-storm based on information provided in and referenced by:
 
-- [https://github.com/nathanmarz/storm-contrib/blob/master/storm-kafka/src/jvm/storm/kafka/TestTopology.java] (https://github.com/nathanmarz/storm-contrib/blob/master/storm-kafka/src/jvm/storm/kafka/TestTopology.java)
-- [https://github.com/nathanmarz/storm/wiki/Trident-tutorial] (https://github.com/nathanmarz/storm/wiki/Trident-tutorial)
-- [https://github.com/nathanmarz/storm/wiki/Trident-state] (https://github.com/nathanmarz/storm/wiki/Trident-state)
-- [https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example] (https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example)
--[https://github.com/wurstmeister/storm-kafka-0.8-plus-test](https://github.com/wurstmeister/storm-kafka-0.8-plus-test)
+- [https://github.com/nathanmarz/storm-contrib/blob/master/storm-kafka/src/jvm/storm/kafka/TestTopology.java](https://github.com/nathanmarz/storm-contrib/blob/master/storm-kafka/src/jvm/storm/kafka/TestTopology.java)
+- [https://github.com/nathanmarz/storm/wiki/Trident-tutorial](https://github.com/nathanmarz/storm/wiki/Trident-tutorial)
+- [https://github.com/nathanmarz/storm/wiki/Trident-state](https://github.com/nathanmarz/storm/wiki/Trident-state)
+- [https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example](https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example)
+- [https://github.com/wurstmeister/storm-kafka-0.8-plus-test](https://github.com/wurstmeister/storm-kafka-0.8-plus-test)
 
 Also contains an attempt at a sample implementation of trident state based on [Hazelcast](http://www.hazelcast.com/)
 
@@ -41,28 +41,23 @@ and </br> [https://github.com/enow/storm-docker](https://github.com/enow/storm-d
 - ```mvn clean package -P cluster```
 
 ## Run a docker container
-Then run it. You can then use docker port to find out what host port the container’s port 22 is mapped to:
+Find the forwarded ssh port for the container you wish to connect to (use `docker-compose ps`)
 
-$ docker run -d -P --name test_sshd eg_sshd
-$ docker port test_sshd 22
-0.0.0.0:49154
-And now you can ssh as root on the container’s IP address (you can find it with docker inspect) or on port 49154 of the Docker daemon’s host IP address (ip address or ifconfig can tell you that) or localhost if on the Docker daemon host:
+    $ ssh root@`docker-machine ip` -p $CONTAINER_PORT(22)
 
-$ ssh root@192.168.1.2 -p 49154
-# The password is ``screencast``.
-$$
+The password is '1q2w3e!@#$' </br>from: https://registry.hub.docker.com/u/enow/main/dockerfile.
 
 ## Running the test topologies locally
 
-- ```java -cp target/storm-kafka-0.8-plus-test-0.2.0-SNAPSHOT-jar-with-dependencies.jar storm.kafka.trident.SentenceAggregationTopology <kafkaZookeeper>```
-- ```java -cp target/storm-kafka-0.8-plus-test-0.2.0-SNAPSHOT-jar-with-dependencies.jar storm.kafka.KafkaSpoutTestTopology <kafkaZookeeper>```
-- ```java -cp target/storm-kafka-0.8-plus-test-0.2.0-SNAPSHOT-jar-with-dependencies.jar storm.kafka.TestTopologyStaticHosts```
+- ```java -cp target/enow-storm-1.0.jar com.enow.storm.trident.SentenceAggregationTopology <kafkaZookeeper>```
+- ```java -cp target/enow-storm-1.0.jar com.enow.storm.KafkaSpoutTestTopology <kafkaZookeeper>```
+- ```java -cp target/enow-storm-1.0.jar com.enow.storm.TestTopologyStaticHosts```
 
 ## Running the test topologies on a storm cluster
 
 
-- ```storm jar target/storm-kafka-0.8-plus-test-0.2.0-SNAPSHOT-jar-with-dependencies.jar storm.kafka.trident.SentenceAggregationTopology <kafkaZookeeper> sentences <dockerIp>```
-- ```storm jar target/storm-kafka-0.8-plus-test-0.2.0-SNAPSHOT-jar-with-dependencies.jar storm.kafka.KafkaSpoutTestTopology <kafkaZookeeper> sentences <dockerIp>```
+- ```storm jar target/enow-storm-1.0.jar com.enow.storm.trident.SentenceAggregationTopology <kafkaZookeeper> sentences <dockerIp>```
+- ```storm jar target/enow-storm-1.0.jar com.enow.storm.KafkaSpoutTestTopology <kafkaZookeeper> sentences <dockerIp>```
 
 The Storm UI will be available under: ```http://<dockerIp>:8080/```
 
@@ -72,7 +67,7 @@ The Logviewer will be available under: ```http://<dockerIp>:8000/``` e.g. ```htt
 
 To feed the topologies with data, start the StormProducer (built in local mode)
 
-- ```java -cp target/storm-kafka-0.8-plus-test-0.2.0-SNAPSHOT-jar-with-dependencies.jar storm.kafka.tools.StormProducer <dockerIp>:<kafkaPort>```
+- ```java -cp target/enow-storm-1.0.jar com.enow.storm.tools.StormProducer <dockerIp>:<kafkaPort>```
 
 Alternatively use the kafka console producer from within the kafka shell (see above)
 
@@ -82,4 +77,4 @@ Alternatively use the kafka console producer from within the kafka shell (see ab
 
 To run a DRPC query, start the DrpcClient (built in local mode)
 
-- ```java -cp target/storm-kafka-0.8-plus-test-0.2.0-SNAPSHOT-jar-with-dependencies.jar storm.kafka.tools.DrpcClient <dockerIp> 3772```
+- ```java -cp target/enow-storm-1.0.jar com.enow.storm.tools.DrpcClient <dockerIp> 3772```

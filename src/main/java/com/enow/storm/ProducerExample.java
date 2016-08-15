@@ -4,7 +4,6 @@ package com.enow.storm;
  */
 
 import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.Properties;
