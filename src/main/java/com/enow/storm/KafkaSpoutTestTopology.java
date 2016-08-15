@@ -40,7 +40,7 @@ public class KafkaSpoutTestTopology {
     }
 
     public StormTopology buildTopology() {
-        SpoutConfig kafkaConfig = new SpoutConfig(brokerHosts, "storm-sentence", "", "storm");
+        SpoutConfig kafkaConfig = new SpoutConfig(brokerHosts, "test", "", "storm");
         kafkaConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout("words", new KafkaSpout(kafkaConfig), 10);
