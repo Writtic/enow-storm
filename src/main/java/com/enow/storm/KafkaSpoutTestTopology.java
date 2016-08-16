@@ -61,7 +61,7 @@ public class KafkaSpoutTestTopology {
             String dockerIp = args[2];
             config.setNumWorkers(2);
             config.setMaxTaskParallelism(5);
-//            config.put(Config.NIMBUS_HOST, dockerIp);
+            config.put(Config.NIMBUS_SEEDS, dockerIp);
             config.put(Config.NIMBUS_THRIFT_PORT, 6627);
             config.put(Config.STORM_ZOOKEEPER_PORT, 2181);
             config.put(Config.STORM_ZOOKEEPER_SERVERS, Arrays.asList(dockerIp));

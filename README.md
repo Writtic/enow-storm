@@ -21,12 +21,12 @@ If you are using a Mac follow the instructions [here](https://docs.docker.com/in
 - Install [storm](https://storm.incubator.apache.org/downloads.html) (so you can upload your topology to the test cluster)
 
 - Start the test environment
-    - ```docker-compose up```
+  - ```docker-compose up```
 - Start a kafka shell
-    - ```start-kafka-shell.sh <Docker Ip> <Zookeeper>```
+  - ```start-kafka-shell.sh <Docker Ip> <Zookeeper>```
 - From within the shell, create a topic
-    - ```$KAFKA_HOME/bin/kafka-topics.sh --create --topic storm-sentence --partitions 2 --zookeeper $ZK --replication-factor 1```
--
+  - ```$KAFKA_HOME/bin/kafka-topics.sh --create --topic storm-sentence --partitions 2 --zookeeper $ZK --replication-factor 1```
+
 
 - For more details and troubleshooting see [https://github.com/enow/kafka-docker](https://github.com/enow/kafka-docker) </br>
 and </br> [https://github.com/enow/storm-docker](https://github.com/enow/storm-docker)
@@ -55,9 +55,16 @@ The password is '1q2w3e!@#$' </br>from: https://registry.hub.docker.com/u/enow/m
 
 ## Running the test topologies on a storm cluster
 
+- ```storm jar target/enow-storm-1.0.jar com.enow.storm.trident.SentenceAggregationTopology <kafkaZookeeper> <topologyName> <dockerIp>```
+- ```storm jar target/enow-storm-1.0.jar com.enow.storm.KafkaSpoutTestTopology <kafkaZookeeper> <topologyName> <dockerIp>```
 
-- ```storm jar target/enow-storm-1.0.jar com.enow.storm.trident.SentenceAggregationTopology <kafkaZookeeper> sentences <dockerIp>```
-- ```storm jar target/enow-storm-1.0.jar com.enow.storm.KafkaSpoutTestTopology <kafkaZookeeper> sentences <dockerIp>```
+Without storm installed on your machine:
+
+```
+docker run --rm --entrypoint storm -v <HOST_TOPOLOGY_TARGET_DIR>:/home/storm enow/storm-dev -c nimbus.host=`docker inspect --format='{{.NetworkSettings.IPAddress}}' storm-nimbus` jar <TOPOLOGY_JAR> <TOPOLOGY_ARGS>
+```
+
+You just edit ```<HOST_TOPOLOGY_TARGET_DIR>```, ```<TOPOLOGY_JAR>```, ```<TOPOLOGY_ARGS>``` sectors.
 
 The Storm UI will be available under: ```http://<dockerIp>:8080/```
 

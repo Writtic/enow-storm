@@ -30,6 +30,7 @@
         <!--<clojure.version>1.7.0</clojure.version>-->
         <!--<log4j-over-slf4j.version>1.6.6</log4j-over-slf4j.version-->
     <!--</properites>-->
+
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
