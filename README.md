@@ -78,14 +78,6 @@ To run a DRPC query, start the DrpcClient (built in local mode)
 
 - ```java -cp target/enow-storm-1.0.jar com.enow.storm.tools.DrpcClient <dockerIp> 3772```
 
-Run a docker container
-----------------------
-Find the forwarded ssh port for the container you wish to connect to (use `docker-compose ps`)
-
-    $ ssh root@`docker-machine ip` -p $CONTAINER_PORT(22)
-
-The password is '1q2w3e!@#$' </br>from: https://registry.hub.docker.com/u/enow/main/dockerfile.
-
 Troubleshooting
 ---------------
 If for some reasons you need to debug a container you can use docker exec command:
