@@ -54,9 +54,7 @@ Running the test topologies on a storm cluster
 
 Without storm installed on your machine:
 
-```
-docker run --rm --entrypoint storm -v <HOST_TOPOLOGY_TARGET_DIR>:/home/storm enow/storm-dev -c nimbus.host=`docker inspect --format='{{.NetworkSettings.IPAddress}}' storm-nimbus` jar <TOPOLOGY_JAR> <TOPOLOGY_ARGS>
-```
+- ```docker run --rm --entrypoint storm -v <HOST_TOPOLOGY_TARGET_DIR>:/home/storm enow/storm-dev -c nimbus.host=`docker inspect --format='{{.NetworkSettings.IPAddress}}' storm-nimbus` jar <TOPOLOGY_JAR> <TOPOLOGY_ARGS>```
 
 You just edit ```<HOST_TOPOLOGY_TARGET_DIR>```, ```<TOPOLOGY_JAR>```, ```<TOPOLOGY_ARGS>``` sectors.
 
