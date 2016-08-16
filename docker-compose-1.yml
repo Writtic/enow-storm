@@ -3,28 +3,35 @@ zookeeper:
   ports:
     - "2181:2181"
 nimbus:
-  image: enow/storm-nimbus
+  command: --daemon nimbus drpc
+  image: enow/storm-dev
   ports:
     - "3773:3773"
     - "3772:3772"
     - "6627:6627"
-  links:
+  external_links:
     - zookeeper:zk
-  volumes:
-    - target:/usr/share/apache-storm/extlib
 supervisor:
-  image: enow/storm-supervisor
+  command: --daemon supervisor logviewer
+  image: enow/storm-dev
   ports:
     - "8000:8000"
+    - "6700:6700"
+    - "6701:6701"
+    - "6702:6702"
+    - "6703:6703"
   links:
     - nimbus:nimbus
+  external_links:
     - zookeeper:zk
 ui:
-  image: enow/storm-ui
+  command: --daemon ui
+  image: enow/storm-dev
   ports:
     - "8080:8080"
   links:
     - nimbus:nimbus
+  external_links:
     - zookeeper:zk
 kafka:
   image: enow/kafka
@@ -33,6 +40,7 @@ kafka:
   links:
     - zookeeper:zk
   environment:
-    KAFKA_ADVERTISED_HOST_NAME: 192.168.991.100
+    KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
   volumes:
       - /var/run/docker.sock:/var/run/docker.sock

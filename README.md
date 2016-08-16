@@ -21,13 +21,15 @@ If you are using a Mac follow the instructions [here](https://docs.docker.com/in
 - Install [storm](https://storm.incubator.apache.org/downloads.html) (so you can upload your topology to the test cluster)
 
 - Pull the Docker image : ```docker pull enow/storm-dev```
-- Start the test environment
-  - ```docker-compose up```
+- Start Zookeeper and Kafka server
+  - ```docker-compose -p storm -f ./kafka.yml up```(pass the -d flag to run container in background)
+  - If you need more information or check again, </br>Try this ```docker-compose -p storm ps```
+- Start storm server
+  - ```docker run --name="storm-nimbus" -h nimbus --expose 6627 --expose 3772 --expose 3773 --link storm_zookeeper_1:zk -d enow/storm-dev --daemon nimbus```
 - Start a kafka shell
   - ```start-kafka-shell.sh <Docker Ip> <Zookeeper>```
 - From within the shell, create a topic
-  - ```$KAFKA_HOME/bin/kafka-topics.sh --create --topic storm-sentence --partitions 2 --zookeeper $ZK --replication-factor 1```
-
+  - ```$KAFKA_HOME/bin/kafka-topics.sh --create --topic test --partitions 2 --zookeeper $ZK --replication-factor 1```
 
 - For more details and troubleshooting see [https://github.com/enow/kafka-docker](https://github.com/enow/kafka-docker) </br>
 and </br> [https://github.com/Writtic/docker-storm-dev](https://github.com/Writtic/docker-storm-dev)
@@ -72,14 +74,20 @@ Alternatively use the kafka console producer from within the kafka shell (see ab
 
 - ```$KAFKA_HOME/bin/kafka-console-producer.sh --topic=storm-sentence --broker-list=<dockerIp>:<kafkaPort>```
 
+You can replace ```<dockerIp>:<kafkaPort>``` with ``` `broker-list.sh` ```, if you use lots of brokers
+
 Consuming data
 --------------
 To run a DRPC query, start the DrpcClient (built in local mode)
 
 - ```java -cp target/enow-storm-1.0.jar com.enow.storm.tools.DrpcClient <dockerIp> 3772```
 
+Also alternatively use the kafka console consume from within the kafka shell (see above)
+
+- ```$KAFKA_HOME/bin/kafka-console-consumer.sh --topic test --zookeeper $ZK --from-beginning```(with ```--from-beginning``` you can see whole produced messages)
+
 Troubleshooting
 ---------------
 If for some reasons you need to debug a container you can use docker exec command:
 
-Example : ```docker exec -it storm_nimbus_1 /bin/bash```
+Example : ```docker exec -it enow_nimbus_1 /bin/bash```
