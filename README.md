@@ -8,6 +8,7 @@ Test project for enow-storm based on information provided in and referenced by:
 - [https://github.com/nathanmarz/storm/wiki/Trident-state](https://github.com/nathanmarz/storm/wiki/Trident-state)
 - [https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example](https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example)
 - [https://github.com/wurstmeister/storm-kafka-0.8-plus-test](https://github.com/wurstmeister/storm-kafka-0.8-plus-test)
+- [https://github.com/fhussonnois/docker-storm](https://github.com/fhussonnois/docker-storm)
 
 Also contains an attempt at a sample implementation of trident state based on [Hazelcast](http://www.hazelcast.com/)
 
@@ -21,18 +22,16 @@ If you are using a Mac follow the instructions [here](https://docs.docker.com/in
 - Install [storm](https://storm.incubator.apache.org/downloads.html) (so you can upload your topology to the test cluster)
 
 - Pull the Docker image : ```docker pull enow/storm-dev```
-- Start Zookeeper and Kafka server
-  - ```docker-compose -p storm -f ./kafka.yml up```(pass the -d flag to run container in background)
+- Start docker compose :
+  - ```docker-compose -p storm up```</br>(pass the -d flag to run container in background)
   - If you need more information or check again, </br>Try this ```docker-compose -p storm ps```
-- Start storm server
-  - ```docker run --name="storm-nimbus" -h nimbus --expose 6627 --expose 3772 --expose 3773 --link storm_zookeeper_1:zk -d enow/storm-dev --daemon nimbus```
 - Start a kafka shell
   - ```start-kafka-shell.sh <Docker Ip> <Zookeeper>```
 - From within the shell, create a topic
   - ```$KAFKA_HOME/bin/kafka-topics.sh --create --topic test --partitions 2 --zookeeper $ZK --replication-factor 1```
 
-- For more details and troubleshooting see [https://github.com/enow/kafka-docker](https://github.com/enow/kafka-docker) </br>
-and </br> [https://github.com/Writtic/docker-storm-dev](https://github.com/Writtic/docker-storm-dev)
+- For more details and troubleshooting see</br>   [https://github.com/Writtic/kafka-docker](https://github.com/Writtic/kafka-docker) </br>
+and </br> [https://github.com/Writtic/docker-storm](https://github.com/Writtic/docker-storm)
 
 
 Build for running locally:
@@ -46,17 +45,16 @@ Build for running on a Storm cluster:
 Running the test topologies locally
 -----------------------------------
 - ```java -cp target/enow-storm-1.0.jar com.enow.storm.trident.SentenceAggregationTopology <kafkaZookeeper>```
+
 - ```java -cp target/enow-storm-1.0.jar com.enow.storm.KafkaSpoutTestTopology <kafkaZookeeper>```
+
 - ```java -cp target/enow-storm-1.0.jar com.enow.storm.TestTopologyStaticHosts```
 
 Running the test topologies on a storm cluster
 ----------------------------------------------
 - ```storm jar target/enow-storm-1.0.jar com.enow.storm.trident.SentenceAggregationTopology <kafkaZookeeper> <topologyName> <dockerIp>```
+
 - ```storm jar target/enow-storm-1.0.jar com.enow.storm.KafkaSpoutTestTopology <kafkaZookeeper> <topologyName> <dockerIp>```
-
-Without storm installed on your machine:
-
-- ```docker run --rm --entrypoint storm -v <HOST_TOPOLOGY_TARGET_DIR>:/home/storm enow/storm-dev -c nimbus.host=`docker inspect --format='{{.NetworkSettings.IPAddress}}' storm-nimbus` jar <TOPOLOGY_JAR> <TOPOLOGY_ARGS>```
 
 You just edit ```<HOST_TOPOLOGY_TARGET_DIR>```, ```<TOPOLOGY_JAR>```, ```<TOPOLOGY_ARGS>``` sectors.
 
@@ -79,15 +77,16 @@ You can replace ```<dockerIp>:<kafkaPort>``` with ``` `broker-list.sh` ```, if y
 Consuming data
 --------------
 To run a DRPC query, start the DrpcClient (built in local mode)
+or you make other bolt for cosuming data from kafka.
 
-- ```java -cp target/enow-storm-1.0.jar com.enow.storm.tools.DrpcClient <dockerIp> 3772```
+- ```java -cp target/enow-storm-1.0.jarfrom com.enow.storm.tools.DrpcClient <dockerIp> 3772```
 
 Also alternatively use the kafka console consume from within the kafka shell (see above)
 
-- ```$KAFKA_HOME/bin/kafka-console-consumer.sh --topic test --zookeeper $ZK --from-beginning```(with ```--from-beginning``` you can see whole produced messages)
+- ```$KAFKA_HOME/bin/kafka-console-consumer.sh --topic test --zookeeper $ZK --from-beginning```</br>(with ```--from-beginning``` you can see whole produced messages)
 
 Troubleshooting
 ---------------
 If for some reasons you need to debug a container you can use docker exec command:
 
-Example : ```docker exec -it enow_nimbus_1 /bin/bash```
+Example : ```docker exec -it storm_nimbus_1 /bin/bash```
